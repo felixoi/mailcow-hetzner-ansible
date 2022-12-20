@@ -1,6 +1,6 @@
-##########################################
-##  Hetzner cloud server configuration  ##
-##########################################
+#----------------------------------------#
+#   Hetzner cloud server configuration   #
+#----------------------------------------#
 hcloud_token: xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxxxzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz
 server_name: mailserver
 # Choose a server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
@@ -11,16 +11,16 @@ server_backups: false
 server_ssh_keys:
   - { name: "WeirdName", key: "ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
 
-##########################################
-##         mailcow configuration        ##
-##########################################
+#----------------------------------------#
+#          mailcow configuration         #
+#----------------------------------------#
 hostname: mail.example.com
 timezone: Europe/Berlin
 mailcow_version: 2022-11b
 
-##########################################
-##          Backup configuration        ##
-##########################################
+#----------------------------------------#
+#           Backup configuration         #
+#----------------------------------------#
 backup_enabled: yes
 backup_passphrase: "supersecret"
 backup_private_key: "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KLS0tLS1FTkQgT1BFTlNTSCBQUklW|||xyz|||QVRFIEtFWS0tLS0tCg=="
