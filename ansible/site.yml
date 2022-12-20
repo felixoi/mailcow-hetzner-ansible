@@ -21,3 +21,4 @@
   roles:
     - server
     - mailcow
+    - mailcow-customized

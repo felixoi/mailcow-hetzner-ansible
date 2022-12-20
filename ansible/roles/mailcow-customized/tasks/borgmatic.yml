@@ -45,6 +45,7 @@
 - name: Initialize Borgmatic repository
   command: "{{ item }}"
   with_items:
+  - docker-compose up -d
   - docker-compose restart borgmatic-mailcow
   - docker-compose exec borgmatic-mailcow borgmatic init --encryption repokey-blake2
   args:

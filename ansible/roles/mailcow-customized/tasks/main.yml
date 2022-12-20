@@ -1,0 +1,2 @@
+- import_tasks: borgmatic.yml
+  when: backup_enabled
