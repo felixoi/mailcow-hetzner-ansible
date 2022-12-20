@@ -1,0 +1,4 @@
+- import_tasks: firewall.yml
+- import_tasks: ssh.yml
+- import_tasks: server.yml
+- import_tasks: rdns.yml

@@ -1,0 +1,23 @@
+- name: Create hetzner cloud server
+  hetzner.hcloud.hcloud_server:
+    api_token: "{{ hcloud_token }}"
+    name: "{{ server_name }}"
+    server_type: "{{ server_type }}"
+    location: "{{ server_location }}"
+    image: ubuntu-22.04
+    state: "present"
+    backups: "{{ server_backups }}"
+    delete_protection: true
+    rebuild_protection: true
+    enable_ipv4: true
+    enable_ipv6: true
+    firewalls:
+      - "{{ server_name }}"
+    ssh_keys: "{{ server_ssh_keys | json_query('[*].name') }}"
+  register: server
+
+- name: Add created cloud server to host group
+  add_host:
+    hostname: "{{ server.hcloud_server.ipv4_address }}"
+    groupname: servers
+  changed_when: false

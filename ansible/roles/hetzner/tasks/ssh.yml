@@ -1,0 +1,7 @@
+- name: Add server SSH keys
+  hcloud_ssh_key:
+    api_token: "{{ hcloud_token }}"
+    name: "{{ item.name }}"
+    public_key: "{{ item.key }}"
+    state: present
+  with_items: "{{ server_ssh_keys }}"

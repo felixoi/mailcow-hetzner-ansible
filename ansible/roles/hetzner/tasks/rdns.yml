@@ -1,0 +1,7 @@
+- name: Set reverse DNS entry
+  hcloud_rdns:
+    api_token: "{{ hcloud_token }}"
+    server: "{{ server_name }}"
+    ip_address: "{{ server.hcloud_server.ipv4_address }}"
+    dns_ptr: "{{ hostname }}"
+    state: present

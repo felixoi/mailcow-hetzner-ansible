@@ -1,0 +1,3 @@
+[submodule "ansible/roles/mailcow"]
+	path = ansible/roles/mailcow
+	url = git@github.com:mailcow/mailcow-ansiblerole.git

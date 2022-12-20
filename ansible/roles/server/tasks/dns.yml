@@ -1,0 +1,17 @@
+- name: Create systemd-resolved config directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d/
+    state: directory
+
+- name: Copy systemd-resolved config
+  ansible.builtin.copy:
+    src: custom-dns.conf
+    dest: /etc/systemd/resolved.conf.d/custom-dns.conf
+  register: resolvedconfig
+
+- name: Restart systemd-resolved service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: systemd-resolved
+  when: resolvedconfig.changed

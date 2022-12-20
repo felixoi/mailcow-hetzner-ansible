@@ -1,0 +1,62 @@
+- name: Create hetzner firewall resource
+  hetzner.hcloud.hcloud_firewall:
+    api_token: "{{ hcloud_token }}"
+    name: "{{ server_name }}"
+    rules:
+      - description: SSH
+        direction: in
+        protocol: tcp
+        port: "22"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: Postfix SMTP
+        direction: in
+        protocol: tcp
+        port: "25"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: Postfix SMTPS
+        direction: in
+        protocol: tcp
+        port: "465"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: Postfix Submission
+        direction: in
+        protocol: tcp
+        port: "587"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: Dovecot IMAP
+        direction: in
+        protocol: tcp
+        port: "143"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: Dovecot IMAPS
+        direction: in
+        protocol: tcp
+        port: "993"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: HTTP
+        direction: in
+        protocol: tcp
+        port: "80"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+      - description: HTTPS
+        direction: in
+        protocol: tcp
+        port: "443"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+    state: present

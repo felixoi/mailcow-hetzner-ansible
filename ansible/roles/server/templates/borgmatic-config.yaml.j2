@@ -1,0 +1,34 @@
+location:
+    source_directories:
+         - /mnt/source
+    repositories:
+         - ssh://{{ backup_user }}@{{ backup_host }}:{{ backup_port }}/{{ backup_path }}
+    exclude_patterns:
+        - '/mnt/source/postfix/public/'
+        - '/mnt/source/postfix/private/'
+        - '/mnt/source/rspamd/rspamd.sock'
+
+retention:
+    keep_hourly: 24
+    keep_daily: 7
+    keep_weekly: 4
+    keep_monthly: 6
+    prefix: ""
+
+hooks:
+    mysql_databases:
+        - name: ${DBNAME}
+          username: ${DBUSER}
+          password: ${DBPASS}
+          options: --default-character-set=utf8mb4
+
+storage:
+    ssh_command: ssh -o StrictHostKeyChecking=no
+
+{% if backup_healthchecks_enabled %}
+hooks:
+    healthchecks:
+        ping_url: {{ backup_healthchecks_webhook }}
+        states:
+            - finish
+{% endif %}

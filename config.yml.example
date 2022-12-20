@@ -1,0 +1,32 @@
+##########################################
+##  Hetzner cloud server configuration  ##
+##########################################
+hcloud_token: xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxxxzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz
+server_name: mailserver
+# Choose a server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
+server_type: cx21
+# Choose a location from https://docs.hetzner.com/cloud/general/locations/#what-locations-are-there
+server_location: nbg1
+server_backups: false
+server_ssh_keys:
+  - { name: "WeirdName", key: "ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
+
+##########################################
+##         mailcow configuration        ##
+##########################################
+hostname: mail.example.com
+timezone: Europe/Berlin
+mailcow_version: 2022-11b
+
+##########################################
+##          Backup configuration        ##
+##########################################
+backup_enabled: yes
+backup_passphrase: "supersecret"
+backup_private_key: "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KLS0tLS1FTkQgT1BFTlNTSCBQUklW|||xyz|||QVRFIEtFWS0tLS0tCg=="
+backup_user: u111111-sub1
+backup_host: u111111-sub1.your-storagebox.de
+backup_port: 23
+backup_path: ./backups
+backup_healthchecks_enabled: yes
+backup_healthchecks_webhook: https://hc-ping.com/11111111-1111-1111-1111-111111111111

@@ -1,0 +1,59 @@
+- name: Copy docker-compose.override.yml containing Borgmatic
+  ansible.builtin.template:
+    src: docker-compose.override.yml.j2
+    dest: "{{ mailcow__install_path }}/docker-compose.override.yml"
+
+- name: Create Borgmatic config/etc directory
+  file:
+    path: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/"
+    state: directory
+
+- name: Copy Borgmatic config
+  shell: |
+    source "{{ mailcow__install_path }}/mailcow.conf"
+    cat <<EOF > "{{ mailcow__install_path }}/data/conf/borgmatic/etc/config.yaml"
+    {{ lookup('ansible.builtin.template', 'borgmatic-config.yaml.j2') }}
+    EOF
+  args:
+    executable: /bin/bash
+
+- name: Copy Borgmatic crontab
+  ansible.builtin.copy:
+    src: borgmatic-crontab.txt
+    dest: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/crontab.txt"
+
+- name: Create Borgmatic config/ssh directory
+  file:
+    path: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/"
+    state: directory
+
+- name: Decode SSH key for backup server
+  shell: "echo '{{ backup_private_key }}' | base64 -d"
+  register: backup_sshkey
+  changed_when: false
+
+- name: Copy SSH key for backup server
+  copy:
+    dest: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/id_rsa"
+    content: "{{ backup_sshkey.stdout_lines | join('\n') }}\n"
+
+- name: Correct SSH key permissions for backup server
+  ansible.builtin.file:
+    path: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/id_rsa"
+    mode: '0600'
+
+- name: Initialize Borgmatic repository
+  command: "{{ item }}"
+  with_items:
+  - docker-compose restart borgmatic-mailcow
+  - docker-compose exec borgmatic-mailcow borgmatic init --encryption repokey-blake2
+  args:
+    chdir: "{{ mailcow__install_path }}"
+    creates: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
+  register: borgmatic_init
+
+- name: Mark Borgmatic repository as initialized
+  ansible.builtin.file:
+    path: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
+    state: touch
+  when: borgmatic_init.changed
