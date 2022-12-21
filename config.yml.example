@@ -1,13 +1,17 @@
 #----------------------------------------#
 #   Hetzner cloud server configuration   #
 #----------------------------------------#
+# Hetzner Cloud token with write access (https://console.hetzner.cloud/projects/xxxxxxx/security/tokens)
 hcloud_token: xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxxxzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz
+# Hetzner server name
 server_name: mailserver
-# Choose a server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
+# Server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
 server_type: cx21
-# Choose a location from https://docs.hetzner.com/cloud/general/locations/#what-locations-are-there
+# Location from https://docs.hetzner.com/cloud/general/locations/#what-locations-are-there
 server_location: nbg1
+# Enable Hetzner backups for the server (extra costs)
 server_backups: false
+# SSH keys for management access using the root user
 server_ssh_keys:
   - { name: "WeirdName", key: "ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
 
@@ -15,19 +19,31 @@ server_ssh_keys:
 #          mailcow configuration         #
 #----------------------------------------#
 hostname: mail.example.com
+# Server and mailserver timezone
 timezone: Europe/Berlin
+# mailcow version
 mailcow_version: 2022-11b
+# Whether to enable MTA-STS (needs additional dns configuration)
 mta_sts: yes
 
 #----------------------------------------#
 #           Backup configuration         #
 #----------------------------------------#
+# Whether backup using Borgbackup to an external server should be enabled
 backup_enabled: yes
+# Passphrase for the Borgbackup repository
 backup_passphrase: "supersecret"
+# SSH private key as base64 for connecting to the backup host
 backup_private_key: "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KLS0tLS1FTkQgT1BFTlNTSCBQUklW|||xyz|||QVRFIEtFWS0tLS0tCg=="
+# Backup server user
 backup_user: u111111-sub1
+# Backup server host
 backup_host: u111111-sub1.your-storagebox.de
+# Backup server ssh port
 backup_port: 23
+# Path of the Borgbackup repository at the backup server
 backup_path: ./backups
+# Whether the healtchecks.io (self-hosting supported) monitoring for the backup job should be enabled
 backup_healthchecks_enabled: yes
+# Webhook of the configured healtchecks.io check
 backup_healthchecks_webhook: https://hc-ping.com/11111111-1111-1111-1111-111111111111
