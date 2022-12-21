@@ -17,6 +17,7 @@ server_ssh_keys:
 hostname: mail.example.com
 timezone: Europe/Berlin
 mailcow_version: 2022-11b
+mta_sts: yes
 
 #----------------------------------------#
 #           Backup configuration         #
