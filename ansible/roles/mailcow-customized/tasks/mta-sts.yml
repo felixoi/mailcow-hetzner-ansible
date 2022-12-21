@@ -1,0 +1,16 @@
+- name: Copy mta-sts.txt to .well-known
+  ansible.builtin.template:
+    src: mta-sts.txt.j2
+    dest: "{{ mailcow__install_path }}/data/web/.well-known/mta-sts.txt"
+
+# Remove when https://github.com/mailcow/mailcow-ansiblerole/pull/37 is merged
+- name: Set additional server names in mailcow.conf
+  become: yes
+  replace:
+    path: "{{ mailcow__install_path }}/mailcow.conf"
+    regexp: "^{{ item.variable }}=.*"
+    replace: "{{ item.variable }}={{ item.value }}"
+  notify: Recreate mailcow
+  loop:
+    - variable: ADDITIONAL_SERVER_NAMES
+      value: "{{ mailcow__config_additional_server_names | join(',') }}"

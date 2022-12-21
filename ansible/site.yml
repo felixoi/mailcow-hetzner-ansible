@@ -16,6 +16,8 @@
     mailcow__timezone: "{{ timezone }}"
     mailcow__redirect_http_to_https: yes
     mailcow__config_use_watchdog: yes
+    mailcow__config_additional_server_names: ["mta-sts.*"]
+    mailcow__config_additional_san: ["mta-sts.*"]
   environment:
     BORG_RSH: ssh -o StrictHostKeyChecking=no
   roles:
