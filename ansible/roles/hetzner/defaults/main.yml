@@ -1,0 +1,4 @@
+server_name: mailserver
+server_location: nbg1
+server_backups: false
+server_ssh_keys:

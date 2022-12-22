@@ -9,7 +9,7 @@
   hosts: servers
   remote_user: root
   vars:
-    docker_compose_version: 2.14.1
+    docker_compose_version: "2.14.2"
     mailcow__install_path: "/opt/mailcow-dockerized"
     mailcow__hostname: "{{ hostname }}"
     mailcow__git_version: "{{ mailcow_version }}"

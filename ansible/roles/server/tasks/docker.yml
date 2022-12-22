@@ -21,8 +21,25 @@
       - docker-ce-cli
       - containerd.io
 
+- name: Get current docker-compose version
+  command: docker-compose --version
+  register: docker_compose_version_output
+  changed_when: false
+  failed_when: false
+  check_mode: no
+
+- name: Extract current docker-compose version
+  set_fact:
+    docker_compose_version_current: "{{ docker_compose_version_output.stdout | regex_search('(\\d+(\\.\\d+)+)') }}"
+  when:
+    - docker_compose_version_output.stdout is defined
+
 - name: Install docker-compose
   get_url:
     url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-Linux-x86_64"
     dest: /usr/local/bin/docker-compose
     mode: u+x,g+x,o+x
+    force: true
+  when: >
+    docker_compose_version_current is not defined
+    or docker_compose_version_current != docker_compose_version

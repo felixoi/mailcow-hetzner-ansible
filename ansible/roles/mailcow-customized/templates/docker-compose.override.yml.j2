@@ -7,11 +7,11 @@ services:
     restart: always
     dns: ${IPV4_NETWORK:-172.22.1}.254
     volumes:
-      - vmail-vol-1:/mnt/source/vmail:ro
-      - crypt-vol-1:/mnt/source/crypt:ro
-      - redis-vol-1:/mnt/source/redis:ro,z
-      - rspamd-vol-1:/mnt/source/rspamd:ro,z
-      - postfix-vol-1:/mnt/source/postfix:ro,z
+      - vmail-vol-1:/mnt/source/vmail{{ '' if 'vmail' in backup_restorable else ':ro' }}
+      - crypt-vol-1:/mnt/source/crypt{{ '' if 'crypt' in backup_restorable else ':ro' }}
+      - redis-vol-1:/mnt/source/redis:{{ 'z' if 'redis' in backup_restorable else 'ro,z' }}
+      - rspamd-vol-1:/mnt/source/rspamd:{{ 'z' if 'rspamd' in backup_restorable else 'ro,z' }}
+      - postfix-vol-1:/mnt/source/postfix:{{ 'z' if 'postfix' in backup_restorable else 'ro,z' }}
       - mysql-socket-vol-1:/var/run/mysqld/:z
       - borg-config-vol-1:/root/.config/borg:Z
       - borg-cache-vol-1:/root/.cache/borg:Z

@@ -4,6 +4,8 @@ Ansible playbook to automatically set up a [mailcow](https://github.com/mailcow/
 including provisioning of the server itself, with optional backups to a
 [Hetzner Storage Box](https://www.hetzner.com/storage/storage-box) (or other providers with available ssh access).
 
+## Prerequisites
+
 ## Running the playbook
 
 Copy `config.yml.example` to `config.yml` and change the variables according to your wishes.
@@ -57,3 +59,53 @@ Instead of copying the config and defining the variables there you can also
 13. In case you want to monitor your backup cron job using [healthchecks](https://github.com/healthchecks/healthchecks) (hosted or self-hosted):
     1. `backup_healthchecks_enabled: yes`
     2. `backup_healthchecks_webhook: https://hc-ping.com/<ping_uuid>`
+
+# How to restore from a backup
+
+Restoring is not part of the playbook, as it should be done only under supervision and with extreme caution.
+The backup contains the data directories of the following services: `vmail`, `crypt`, `redis`, `rspamd`, `postfix`.
+Additionally, the MySQL database is backed up using the MySQL Borgmatic integration. As the backup mechanism is different 
+from that of the other services, it is also necessary to distinguish between them during recovery.
+
+## Prerequisites
+
+You need an shh connection to the cloud server and run all following commands in the `/opt/mailcow-dockerized`.
+
+## List all available backups
+
+```
+docker-compose exec borgmatic-mailcow borgmatic list
+```
+Example output:
+```
+ssh://u111111-sub1@u111111-sub1.your-storagebox.de:23/./backups: Listing archives
+mailcow-2022-12-19T21:22:42.775896   Mon, 2022-12-19 21:22:44 [d8293fe52f02a6e7c13e02e1ae82a56838949d4005c7a037947f6874d631d50c]
+mailcow-2022-12-19T23:14:06.114196   Mon, 2022-12-19 23:14:07 [99bf7efe349aa58fcad707cfd6b0192c80a6e3457a6fa69542871c11bbdd72aa]
+mailcow-2022-12-20T23:14:06.064385   Tue, 2022-12-20 23:14:07 [bf6d07f600087c0ec934061267f39972f5a6ad6c19dc9f2e09652019ccad9088]
+mailcow-2022-12-21T14:14:07.412074   Wed, 2022-12-21 14:14:08 [048bb19ae8577815c4b415c832ee6d5b221e65d1e93a046e596572dd224dca95]
+mailcow-2022-12-21T15:14:07.988515   Wed, 2022-12-21 15:14:09 [cbb2f877c13ee5f73e009ddd32e32d859ad8bb29689faed148378462f7fc16a2]
+mailcow-2022-12-21T16:14:08.082914   Wed, 2022-12-21 16:14:09 [43545410400baf66ba95fe581a5ae861f13a05172a92ab5f0c066e3176910e90]
+```
+Every backup has an unique name which is shown in the first column. The name is used in the following commands to
+specify which backup you want to restore. It's also possible to use `latest` instead to reference the latest
+available backup.
+
+## Restore services but the MySQL database
+
+If you want to restore a service beside the MySQL database you need to set the `backup_restorable` config variable
+correctly (add all services you want to restore to the list) and run the playbook for the changes to take effect.
+
+```
+docker-compose exec borgmatic-mailcow borgmatic extract [PATHS] --archive latest
+```
+`[PATHS]` needs to be replaced by you as following:
+- If you want to restore all possible services use `--path mnt/source`
+- If you want to restore specific services only add `--path mnt/source/<service_name>` following for **every** service, where
+  `<service_name>` is one of the services listed before.
+
+## Restore MySQL database
+
+If you want to restore the MySQL database run the following command:
+```
+docker-compose exec borgmatic-mailcow borgmatic restore --archive <name>
+```
