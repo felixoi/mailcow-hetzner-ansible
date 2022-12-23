@@ -18,6 +18,8 @@
     mailcow__config_use_watchdog: yes
     mailcow__config_additional_server_names: "{{ ['mta-sts.*'] if mta_sts else [] }}"
     mailcow__config_additional_san: "{{ ['mta-sts.*'] if mta_sts else [] }}"
+    mailcow__config_watchdog_notify_email: "{{ mailcow_watchdog_contact }}"
+    mailcow__config_acme_contact: "{{ mailcow_acme_contact }}"
   environment:
     BORG_RSH: ssh -o StrictHostKeyChecking=no
   roles:

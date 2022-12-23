@@ -109,3 +109,10 @@ If you want to restore the MySQL database run the following command:
 ```
 docker-compose exec borgmatic-mailcow borgmatic restore --archive <name>
 ```
+
+## After restoring
+
+Restart mailcow:
+```
+docker-compose down && docker-compose up -d
+```

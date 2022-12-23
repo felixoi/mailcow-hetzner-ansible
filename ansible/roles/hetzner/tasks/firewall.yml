@@ -45,6 +45,13 @@
         source_ips:
           - 0.0.0.0/0
           - ::/0
+      - description: Dovecot ManageSieve
+        direction: in
+        protocol: tcp
+        port: "4190"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
       - description: HTTP
         direction: in
         protocol: tcp
