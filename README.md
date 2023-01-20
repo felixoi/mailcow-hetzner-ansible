@@ -6,6 +6,19 @@ including provisioning of the server itself, with optional backups to a
 
 ## Prerequisites
 
+### Clone and update
+
+This repository contains the [official mailcow ansible role](https://github.com/mailcow/mailcow-ansiblerole) as submodule.
+In order for this playbook to work correctly, you need to clone the repository using the recursive flag:
+```
+git clone --recursive https://github.com/felixoi/mailcow-hetzner-ansible.git
+```
+Therefore, when updating the local repository, the submodule must also be set to the correct commit:
+```
+git pull
+git submodule update --recursive
+```
+
 ## Running the playbook
 
 Copy `config.yml.example` to `config.yml` and change the variables according to your wishes.
