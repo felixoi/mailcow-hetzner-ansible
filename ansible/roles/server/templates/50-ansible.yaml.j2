@@ -1,0 +1,18 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      addresses:
+      - {{ hostvars['localhost'].server_info.ipv4_address }}/32
+      - {{ hostvars['localhost'].server_info.ipv6[:-3] + '1' }}/64
+      routes:
+      - to: 0.0.0.0/0
+        via: 172.31.1.1
+        on-link: true
+      - to: ::/0
+        via: fe80::1
+        on-link: true
+      match:
+        macaddress: {{ hostvars[inventory_hostname]["ansible_default_ipv4"]["macaddress"] }}
+      set-name: eth0

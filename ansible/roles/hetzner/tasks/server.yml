@@ -16,6 +16,10 @@
     ssh_keys: "{{ server_ssh_keys | json_query('[*].name') }}"
   register: server
 
+- name: Register server information
+  set_fact:
+    server_info: "{{ server.hcloud_server }}"
+
 - name: Add created cloud server to host group
   add_host:
     hostname: "{{ server.hcloud_server.ipv4_address }}"

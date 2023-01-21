@@ -1,3 +1,4 @@
+- import_tasks: network.yml
 - import_tasks: setup.yml
 - import_tasks: dns.yml
 - import_tasks: docker.yml
