@@ -116,6 +116,25 @@ docker-compose exec borgmatic-mailcow borgmatic extract [PATHS] --archive latest
 - If you want to restore specific services only add `--path mnt/source/<service_name>` following for **every** service, where
   `<service_name>` is one of the services listed before.
 
+**Be aware** that due to a [limitation of borg backup](https://borgbackup.readthedocs.io/en/stable/faq.html#are-there-other-known-limitations)
+the folders borgmatic extracts to need to be empty for a point-in-time restore. If they are not empty, you may end up in weird mailbox states.
+
+:warning: **The following commands are destructive, you may want to
+[trigger a manual backup](https://docs.mailcow.email/third_party/borgmatic/third_party-borgmatic/#manual-archiving-run-with-debugging-output) of the current state beforehand!**
+
+To empty the folder for a service you can use
+```
+docker-compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/<service>/*'
+```
+or for all services but the MySQL database
+```
+docker-compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/**/*'
+```
+
+Restoring is also possible for particular files of a backup (e.g. restoring only one mailbox to a previous state).
+Check out the [borgmatic docs](https://torsion.org/borgmatic/docs/how-to/extract-a-backup/#extract-particular-files) for instructions.
+The mentioned limitation also applies for restoring particular files which means that you may want to delete the existing files/folders beforehand.
+
 ## Restore MySQL database
 
 If you want to restore the MySQL database run the following command:

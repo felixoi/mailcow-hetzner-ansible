@@ -7,11 +7,11 @@
   ansible.builtin.copy:
     src: custom-dns.conf
     dest: /etc/systemd/resolved.conf.d/custom-dns.conf
-  register: resolvedconfig
+  register: resolved_config
 
 - name: Restart systemd-resolved service
   ansible.builtin.systemd:
     state: restarted
     daemon_reload: yes
     name: systemd-resolved
-  when: resolvedconfig.changed
+  when: resolved_config.changed
