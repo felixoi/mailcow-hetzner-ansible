@@ -6,7 +6,7 @@ hcloud_token: xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxxxzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz
 # Hetzner server name
 server_name: mailserver
 # Server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
-server_type: cx21
+server_type: cx22
 # Location from https://docs.hetzner.com/cloud/general/locations/#what-locations-are-there
 server_location: nbg1
 # Enable Hetzner backups for the server (extra costs)
