@@ -23,6 +23,8 @@ hostname: mail.example.com
 timezone: Europe/Berlin
 # mailcow version
 mailcow_version: 2022-11b
+# Mailcow full text search
+mailcow_fts: yes
 # Watchdog notification contact information
 mailcow_watchdog_contact: monitoring@external.com
 # Let's Encrypt registration contact information

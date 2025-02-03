@@ -20,6 +20,7 @@
     mailcow__config_additional_san: "{{ ['mta-sts.*'] if mta_sts else [] }}"
     mailcow__config_watchdog_notify_email: "{{ mailcow_watchdog_contact }}"
     mailcow__config_acme_contact: "{{ mailcow_acme_contact }}"
+    mailcow__config_skip_fts: "{{ not mailcow_fts }}"
   environment:
     BORG_RSH: ssh -o StrictHostKeyChecking=no
   roles:
