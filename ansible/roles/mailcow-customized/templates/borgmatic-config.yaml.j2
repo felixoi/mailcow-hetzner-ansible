@@ -1,34 +1,35 @@
-location:
-    source_directories:
-         - /mnt/source
-    repositories:
-         - ssh://{{ backup_user }}@{{ backup_host }}:{{ backup_port }}/{{ backup_path }}
-    exclude_patterns:
-        - '/mnt/source/postfix/public/'
-        - '/mnt/source/postfix/private/'
-        - '/mnt/source/rspamd/rspamd.sock'
+source_directories:
+  - /mnt/source/vmail
+  - /mnt/source/crypt
+  - /mnt/source/redis
+  - /mnt/source/rspamd
+  - /mnt/source/postfix
+repositories:
+  - path: ssh://{{ backup_user }}@{{ backup_host }}:{{ backup_port }}/{{ backup_path }}
+    label: borgbase
+exclude_patterns:
+  - '/mnt/source/postfix/public/'
+  - '/mnt/source/postfix/private/'
+  - '/mnt/source/rspamd/rspamd.sock'
 
-retention:
-    keep_hourly: 24
-    keep_daily: 7
-    keep_weekly: 4
-    keep_monthly: 6
-    prefix: ""
+keep_hourly: 24
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 6
 
-hooks:
-    mysql_databases:
-        - name: ${DBNAME}
-          username: ${DBUSER}
-          password: ${DBPASS}
-          options: --default-character-set=utf8mb4
+mariadb_databases:
+  - name: ${DBNAME}
+    username: ${DBUSER}
+    password: ${DBPASS}
+    options: "--default-character-set=utf8mb4 --skip-ssl"
+    list_options: "--skip-ssl"
+    restore_options: "--skip-ssl"
 
-storage:
-    ssh_command: ssh -o StrictHostKeyChecking=no
+ssh_command: ssh -o StrictHostKeyChecking=no
 
 {% if backup_healthchecks_enabled %}
-hooks:
-    healthchecks:
-        ping_url: {{ backup_healthchecks_webhook }}
-        states:
-            - finish
+healthchecks:
+  ping_url: {{ backup_healthchecks_webhook }}
+  states:
+    - finish
 {% endif %}

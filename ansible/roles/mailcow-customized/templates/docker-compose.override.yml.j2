@@ -1,5 +1,3 @@
-version: '2.1'
-
 services:
   borgmatic-mailcow:
     image: ghcr.io/borgmatic-collective/borgmatic
@@ -20,6 +18,9 @@ services:
     environment:
       - TZ=${TZ}
       - BORG_PASSPHRASE={{ backup_passphrase }}
+      - DBNAME=${DBNAME}
+      - DBUSER=${DBUSER}
+      - DBPASS=${DBPASS}
     networks:
       mailcow-network:
         aliases:
