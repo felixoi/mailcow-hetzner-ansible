@@ -27,10 +27,6 @@ mailcow_version: 2022-11b
 mailcow_fts: yes
 # Watchdog notification contact information
 mailcow_watchdog_contact: monitoring@external.com
-# Let's Encrypt registration contact information
-mailcow_acme_contact: monitoring@example.com
-# Whether to enable MTA-STS (needs additional dns configuration)
-mta_sts: no
 
 #----------------------------------------#
 #           Backup configuration         #

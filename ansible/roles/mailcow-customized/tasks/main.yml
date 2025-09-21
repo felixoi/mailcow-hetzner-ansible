@@ -1,4 +1,2 @@
 - import_tasks: borgmatic.yml
   when: backup_enabled
-- import_tasks: mta-sts.yml
-  when: mta_sts
