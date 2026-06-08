@@ -1,15 +1,8 @@
-- name: Create hetzner firewall resource
+- name: Create mailcow firewall resource
   hetzner.hcloud.hcloud_firewall:
     api_token: "{{ hcloud_token }}"
-    name: "{{ server_name }}"
+    name: "{{ server_firewall_mailcow_name }}"
     rules:
-      - description: SSH
-        direction: in
-        protocol: tcp
-        port: "22"
-        source_ips:
-          - 0.0.0.0/0
-          - ::/0
       - description: Postfix SMTP
         direction: in
         protocol: tcp
@@ -63,6 +56,21 @@
         direction: in
         protocol: tcp
         port: "443"
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+    state: present
+
+- name: Create ssh firewall resource
+  when: server_firewall_ssh_enabled | bool
+  hetzner.hcloud.hcloud_firewall:
+    api_token: "{{ hcloud_token }}"
+    name: "{{ server_firewall_ssh_name }}"
+    rules:
+      - description: SSH
+        direction: in
+        protocol: tcp
+        port: "22"
         source_ips:
           - 0.0.0.0/0
           - ::/0

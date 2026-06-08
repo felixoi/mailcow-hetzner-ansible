@@ -11,8 +11,12 @@
     rebuild_protection: true
     enable_ipv4: true
     enable_ipv6: true
-    firewalls:
-      - "{{ server_name }}"
+    firewalls: >-
+      {{
+      [server_firewall_mailcow_name]
+      + ([server_firewall_ssh_name] if (server_firewall_ssh_enabled | default(false) | bool) else [])
+      + (server_extra_firewalls | default([]))
+      }}
     ssh_keys: "{{ server_ssh_keys | json_query('[*].name') }}"
   register: server
 

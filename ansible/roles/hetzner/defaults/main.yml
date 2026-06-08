@@ -2,3 +2,6 @@ server_name: mailserver
 server_location: nbg1
 server_backups: false
 server_ssh_keys:
+server_firewall_mailcow_name: mailcow
+server_firewall_ssh_enabled: false
+server_firewall_ssh_name: ssh
