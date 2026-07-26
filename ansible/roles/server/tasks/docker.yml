@@ -1,13 +1,16 @@
-- name: Add Docker GPG apt key
-  ansible.builtin.get_url:
-    url: "https://download.docker.com/linux/ubuntu/gpg"
-    dest: /etc/apt/trusted.gpg.d/docker.asc
-    mode: '0644'
-    force: true
-
 - name: Add Docker repository
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu focal stable
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: [deb]
+    uris:
+      - https://download.docker.com/linux/ubuntu
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}"
+    components:
+      - stable
+    architectures:
+      - amd64
+    signed_by: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
 - name: Install docker-ce

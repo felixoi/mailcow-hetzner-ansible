@@ -14,5 +14,5 @@ network:
         via: fe80::1
         on-link: true
       match:
-        macaddress: {{ hostvars[inventory_hostname]["ansible_default_ipv4"]["macaddress"] }}
+        macaddress: {{ hostvars[inventory_hostname]["ansible_facts"]["default_ipv4"]["macaddress"] }}
       set-name: eth0

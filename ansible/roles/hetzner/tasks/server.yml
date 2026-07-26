@@ -26,6 +26,6 @@
 
 - name: Add created cloud server to host group
   add_host:
-    hostname: "{{ server.hcloud_server.ipv4_address }}"
+    hostname: "{{ server_ip_override | default(server.hcloud_server.ipv4_address, true) }}"
     groupname: servers
   changed_when: false

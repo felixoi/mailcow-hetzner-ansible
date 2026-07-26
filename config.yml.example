@@ -14,6 +14,8 @@ server_backups: no
 # SSH keys for management access using the root user
 server_ssh_keys:
   - { name: "WeirdName", key: "ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
+# Override the retrieved public Hetzner IPv4 with internal wireguard adresses etc.
+server_ip_override:
 
 #----------------------------------------#
 #          mailcow configuration         #
