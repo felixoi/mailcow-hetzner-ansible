@@ -62,7 +62,7 @@ Instead of copying the config and defining the variables there you can also
 10. Disable `External reachability` for the created subaccount
 11. Transform the private key to base64 using `echo $(cat <pathofyourchoice>/id_rsa | base64 -w 0);`
 12. Enable and configure backups using vars in this ansible script:
-    1. `backup_enabled: yes`
+    1. `backup_enabled: true`
     2. `backup_passphrase: <choosesecretpassphrase>`
     3. `backup_private_key: <private_key_base64>`
     4. `backup_user: <username_subaccount>`
@@ -70,7 +70,7 @@ Instead of copying the config and defining the variables there you can also
     6. `backup_port: 23`
     7. `backup_path: ./backups` (if changed, the `restrict-to-path` arg in step 6 must be edited accordingly)
 13. In case you want to monitor your backup cron job using [healthchecks](https://github.com/healthchecks/healthchecks) (hosted or self-hosted):
-    1. `backup_healthchecks_enabled: yes`
+    1. `backup_healthchecks_enabled: true`
     2. `backup_healthchecks_webhook: https://hc-ping.com/<ping_uuid>`
 
 # How to restore from a backup

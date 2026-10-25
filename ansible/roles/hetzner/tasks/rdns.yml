@@ -1,10 +1,10 @@
 - name: Set reverse DNS entry
-  hcloud_rdns:
+  hetzner.hcloud.hcloud_rdns:
     api_token: "{{ hcloud_token }}"
     server: "{{ server_name }}"
     ip_address: "{{ item }}"
     dns_ptr: "{{ hostname }}"
     state: present
-  with_items:
+  loop:
     - "{{ server.hcloud_server.ipv4_address }}"
-    - "{{ server.hcloud_server.ipv6[:-3] + '1' }}"
+    - "{{ server_ipv6_address }}"

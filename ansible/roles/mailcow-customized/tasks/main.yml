@@ -1,2 +1,2 @@
-- import_tasks: borgmatic.yml
+- ansible.builtin.import_tasks: borgmatic.yml
   when: backup_enabled

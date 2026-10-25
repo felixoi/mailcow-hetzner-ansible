@@ -1,3 +1,3 @@
-backup_enabled: no
+backup_enabled: false
 backup_restorable: []
-backup_healthchecks_enabled: no
+backup_healthchecks_enabled: false

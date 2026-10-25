@@ -12,6 +12,6 @@
 - name: Restart systemd-resolved service
   ansible.builtin.systemd:
     state: restarted
-    daemon_reload: yes
+    daemon_reload: true
     name: systemd-resolved
   when: resolved_config.changed
