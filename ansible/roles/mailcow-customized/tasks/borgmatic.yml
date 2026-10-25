@@ -54,7 +54,7 @@
   changed_when: "('Started' in docker_output.stderr) or ('Recreated' in docker_output.stderr)"
 
 - name: Initialize Borgmatic repository
-  ansible.builtin.command: "{{ mailcow__compose_command }} exec borgmatic-mailcow borgmatic init --encryption repokey-blake2"
+  ansible.builtin.command: "{{ mailcow__compose_command }} exec borgmatic-mailcow borgmatic repo-create --encryption repokey-blake2"
   args:
     chdir: "{{ mailcow__install_path }}"
     creates: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
