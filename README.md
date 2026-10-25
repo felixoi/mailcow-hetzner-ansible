@@ -87,7 +87,7 @@ You need an shh connection to the cloud server and run all following commands in
 ## List all available backups
 
 ```
-docker-compose exec borgmatic-mailcow borgmatic list
+docker compose exec borgmatic-mailcow borgmatic list
 ```
 Example output:
 ```
@@ -109,7 +109,7 @@ If you want to restore a service beside the MySQL database you need to set the `
 correctly (add all services you want to restore to the list) and run the playbook for the changes to take effect.
 
 ```
-docker-compose exec borgmatic-mailcow borgmatic extract [PATHS] --archive latest
+docker compose exec borgmatic-mailcow borgmatic extract [PATHS] --archive latest
 ```
 `[PATHS]` needs to be replaced by you as following:
 - If you want to restore all possible services use `--path mnt/source`
@@ -124,11 +124,11 @@ the folders borgmatic extracts to need to be empty for a point-in-time restore. 
 
 To empty the folder for a service you can use
 ```
-docker-compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/<service>/*'
+docker compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/<service>/*'
 ```
 or for all services but the MySQL database
 ```
-docker-compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/**/*'
+docker compose exec borgmatic-mailcow sh -c 'rm -rf /mnt/source/**/*'
 ```
 
 Restoring is also possible for particular files of a backup (e.g. restoring only one mailbox to a previous state).
@@ -139,12 +139,12 @@ The mentioned limitation also applies for restoring particular files which means
 
 If you want to restore the MySQL database run the following command:
 ```
-docker-compose exec borgmatic-mailcow borgmatic restore --archive <name>
+docker compose exec borgmatic-mailcow borgmatic restore --archive <name>
 ```
 
 ## After restoring
 
 Restart mailcow:
 ```
-docker-compose down && docker-compose up -d
+docker compose down && docker compose up -d
 ```

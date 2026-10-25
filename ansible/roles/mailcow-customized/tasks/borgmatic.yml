@@ -43,14 +43,14 @@
     mode: '0600'
 
 - name: Make sure that the Borgmatic container is up-to-date and running
-  command: docker-compose up -d borgmatic-mailcow
+  command: "{{ mailcow__compose_command }} up -d borgmatic-mailcow"
   args:
     chdir: "{{ mailcow__install_path }}"
   register: docker_output
   changed_when: "('Started' in docker_output.stderr) or ('Recreated' in docker_output.stderr)"
 
 - name: Initialize Borgmatic repository
-  command: "docker-compose exec borgmatic-mailcow borgmatic init --encryption repokey-blake2"
+  command: "{{ mailcow__compose_command }} exec borgmatic-mailcow borgmatic init --encryption repokey-blake2"
   args:
     chdir: "{{ mailcow__install_path }}"
     creates: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
