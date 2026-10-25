@@ -7,13 +7,10 @@
   ansible.builtin.template:
     src: 50-ansible.yaml.j2
     dest: /etc/netplan/50-ansible.yaml
-  register: network_config
+  notify: Apply network config
 
 - name: Delete default network config
   ansible.builtin.file:
     path: /etc/netplan/50-cloud-init.yaml
     state: absent
-
-- name: Apply network config
-  ansible.builtin.command: netplan apply
-  when: network_config.changed
+  notify: Apply network config

@@ -1,0 +1,8 @@
+- name: Apply network config
+  ansible.builtin.command: netplan apply
+
+- name: Restart systemd-resolved
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: systemd-resolved
