@@ -6,7 +6,6 @@ source_directories:
   - /mnt/source/postfix
 repositories:
   - path: ssh://{{ backup_user }}@{{ backup_host }}:{{ backup_port }}/{{ backup_path }}
-    label: borgbase
 exclude_patterns:
   - '/mnt/source/postfix/public/'
   - '/mnt/source/postfix/private/'
