@@ -2,6 +2,8 @@
   ansible.builtin.template:
     src: docker-compose.override.yml.j2
     dest: "{{ mailcow__install_path }}/docker-compose.override.yml"
+    mode: '0600'
+  no_log: true
 
 - name: Create Borgmatic config/etc directory
   ansible.builtin.file:
@@ -25,21 +27,14 @@
   ansible.builtin.file:
     path: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/"
     state: directory
-
-- name: Decode SSH key for backup server
-  ansible.builtin.shell: "echo '{{ backup_private_key }}' | base64 -d"
-  register: backup_sshkey
-  changed_when: false
+    mode: '0700'
 
 - name: Copy SSH key for backup server
   ansible.builtin.copy:
     dest: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/id_rsa"
-    content: "{{ backup_sshkey.stdout_lines | join('\n') }}\n"
-
-- name: Correct SSH key permissions for backup server
-  ansible.builtin.file:
-    path: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/id_rsa"
+    content: "{{ backup_private_key | b64decode | trim }}\n"
     mode: '0600'
+  no_log: true
 
 - name: Make sure that the Borgmatic container is up-to-date and running
   ansible.builtin.command: "{{ mailcow__compose_command }} up -d borgmatic-mailcow"
