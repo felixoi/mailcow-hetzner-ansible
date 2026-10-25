@@ -8,14 +8,13 @@
     path: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/"
     state: directory
 
+# ${DBNAME}, ${DBUSER} and ${DBPASS} are left as-is and interpolated by borgmatic
+# from the container environment set in docker-compose.override.yml
 - name: Copy Borgmatic config
-  ansible.builtin.shell: |
-    source "{{ mailcow__install_path }}/mailcow.conf"
-    cat <<EOF > "{{ mailcow__install_path }}/data/conf/borgmatic/etc/config.yaml"
-    {{ lookup('ansible.builtin.template', 'borgmatic-config.yaml.j2') }}
-    EOF
-  args:
-    executable: /bin/bash
+  ansible.builtin.template:
+    src: borgmatic-config.yaml.j2
+    dest: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/config.yaml"
+    mode: '0600'
 
 - name: Copy Borgmatic crontab
   ansible.builtin.copy:
