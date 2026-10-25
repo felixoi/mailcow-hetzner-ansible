@@ -1,6 +1,6 @@
 services:
   borgmatic-mailcow:
-    image: ghcr.io/borgmatic-collective/borgmatic
+    image: ghcr.io/borgmatic-collective/borgmatic:2.1.10
     hostname: mailcow
     restart: always
     dns: ${IPV4_NETWORK:-172.22.1}.254
