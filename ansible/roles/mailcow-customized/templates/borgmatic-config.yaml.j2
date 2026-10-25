@@ -25,7 +25,25 @@ mariadb_databases:
     list_options: "--skip-ssl"
     restore_options: "--skip-ssl"
 
-ssh_command: ssh -o StrictHostKeyChecking=no
+ssh_command: ssh -o StrictHostKeyChecking={{ 'yes' if backup_host_keys else 'accept-new' }}
+
+# Don't read whole repo each time
+skip_actions:
+    - check
+
+check_last: 3
+
+commands:
+    - before: action
+      when:
+          - create
+      run:
+          - echo "`date` - Starting backup"
+    - after: action
+      when:
+          - create
+      run:
+          - echo "`date` - Finished backup"
 
 {% if backup_healthchecks_enabled %}
 healthchecks:

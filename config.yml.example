@@ -45,6 +45,10 @@ backup_user: u111111-sub1
 backup_host: u111111-sub1.your-storagebox.de
 # Backup server ssh port
 backup_port: 23
+# SSH host keys of the backup server ("<type> <key>", e.g. from `ssh-keyscan -p 23 <host> | cut -d' ' -f2-`).
+# If empty, the key is trusted on first connection and verified afterwards.
+backup_host_keys:
+  - ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 # Path of the Borgbackup repository at the backup server
 backup_path: ./backups
 # Whether the healtchecks.io (self-hosting supported) monitoring for the backup job should be enabled

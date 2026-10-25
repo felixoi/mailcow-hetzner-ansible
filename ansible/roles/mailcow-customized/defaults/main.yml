@@ -1,3 +1,4 @@
 backup_enabled: false
 backup_restorable: []
+backup_host_keys: []
 backup_healthchecks_enabled: false

@@ -69,6 +69,10 @@ Instead of copying the config and defining the variables there you can also
     5. `backup_host: <username_subaccount>.your-storagebox.de`
     6. `backup_port: 23`
     7. `backup_path: ./backups` (if changed, the `restrict-to-path` arg in step 6 must be edited accordingly)
+    8. `backup_host_keys: [<host_key>, ...]`: the SSH host keys of the storage box, so backups are only sent to the real server.
+       Get them using `ssh-keyscan -p 23 <username_subaccount>.your-storagebox.de | cut -d' ' -f2-` and compare their fingerprints
+       with the ones [published by Hetzner](https://docs.hetzner.com/storage/storage-box/access/access-ssh-rsync-borg/).
+       If left empty, the host key is trusted on first connection and verified on every connection afterwards.
 13. In case you want to monitor your backup cron job using [healthchecks](https://github.com/healthchecks/healthchecks) (hosted or self-hosted):
     1. `backup_healthchecks_enabled: true`
     2. `backup_healthchecks_webhook: https://hc-ping.com/<ping_uuid>`

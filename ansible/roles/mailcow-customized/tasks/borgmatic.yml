@@ -36,6 +36,16 @@
     mode: '0600'
   no_log: true
 
+- name: Pin SSH host keys of backup server
+  ansible.builtin.copy:
+    dest: "{{ mailcow__install_path }}/data/conf/borgmatic/ssh/known_hosts"
+    content: |
+      {% for key in backup_host_keys %}
+      {{ backup_host if backup_port | int == 22 else '[' ~ backup_host ~ ']:' ~ backup_port }} {{ key }}
+      {% endfor %}
+    mode: '0644'
+  when: backup_host_keys | length > 0
+
 - name: Make sure that the Borgmatic container is up-to-date and running
   ansible.builtin.command: "{{ mailcow__compose_command }} up -d borgmatic-mailcow"
   args:

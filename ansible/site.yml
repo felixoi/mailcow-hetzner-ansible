@@ -17,8 +17,6 @@
     mailcow__config_use_watchdog: true
     mailcow__config_watchdog_notify_email: "{{ mailcow_watchdog_contact }}"
     mailcow__config_skip_fts: "{{ not mailcow_fts }}"
-  environment:
-    BORG_RSH: ssh -o StrictHostKeyChecking=no
   roles:
     - server
     - mailcow
