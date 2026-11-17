@@ -9,6 +9,9 @@ server_name: mailserver
 server_type: cx22
 # Location from https://docs.hetzner.com/cloud/general/locations/#what-locations-are-there
 server_location: nbg1
+# OS image (https://docs.hetzner.com/cloud/servers/overview/#available-images). 
+# Only used when the server is created, an existing server is never reinstalled
+server_os_image: ubuntu-26.04
 # Enable Hetzner backups for the server (extra costs)
 server_backups: false
 # SSH keys for management access using the root user

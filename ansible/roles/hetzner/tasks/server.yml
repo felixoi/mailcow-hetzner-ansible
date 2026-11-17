@@ -4,7 +4,7 @@
     name: "{{ server_name }}"
     server_type: "{{ server_type }}"
     location: "{{ server_location }}"
-    image: ubuntu-22.04
+    image: "{{ server_os_image }}"
     state: "present"
     backups: "{{ server_backups }}"
     delete_protection: true
