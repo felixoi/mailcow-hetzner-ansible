@@ -21,13 +21,15 @@ git submodule update --recursive
 
 ### Install dependencies
 
-The playbook needs a few Ansible collections and the `netaddr` Python package (used for IP address handling) on your local machine:
+The playbook needs a few Ansible roles and collections and some Python packages on your local machine:
 ```
-ansible-galaxy collection install -r ansible/requirements.yml
+ansible-galaxy install -r ansible/requirements.yml
 ```
-Install `netaddr` into the same Python environment as Ansible, e.g. `pip install netaddr`, or with your distribution's
-package manager (`python3-netaddr` / `python-netaddr`).
-Run the `ansible-galaxy` command with `--upgrade` from time to time to keep the collections up to date.
+Install the Python packages `netaddr` (IP address handling), `requests` and `python-dateutil` (Hetzner Cloud modules)
+into the same Python environment as Ansible, e.g. `pip install netaddr requests python-dateutil`, or with your
+distribution's package manager (e.g. `python3-netaddr python3-requests python3-dateutil`).
+Run the `ansible-galaxy` command again with `--force` after pulling changes of this repository, and from time to time
+to keep the collections up to date.
 
 ## Running the playbook
 

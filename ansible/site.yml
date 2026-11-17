@@ -41,5 +41,6 @@
           when: borgmatic_running.stdout | length > 0
   roles:
     - server
+    - geerlingguy.docker
     - mailcow
     - mailcow-customized

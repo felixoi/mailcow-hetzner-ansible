@@ -5,5 +5,3 @@
 # Apply network and DNS changes before Docker and mailcow rely on them
 - name: Apply pending network and DNS changes
   ansible.builtin.meta: flush_handlers
-
-- ansible.builtin.import_tasks: docker.yml

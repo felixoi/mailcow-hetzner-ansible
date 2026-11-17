@@ -1,4 +1,8 @@
 ---
+roles:
+  - name: geerlingguy.docker
+    version: 8.0.1
+
 collections:
   - name: ansible.utils
   - name: community.docker
