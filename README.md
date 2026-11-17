@@ -34,26 +34,65 @@ to keep the collections up to date.
 ## Running the playbook
 
 Copy `config.yml.example` to `config.yml` and change the variables according to your wishes.
+The secrets in it (`hcloud_token`, `backup_passphrase`, `backup_private_key`) are stored encrypted, see
+[Encrypting secrets](#encrypting-secrets).
 
 Run the playbook:
 ```
-ansible-playbook ansible/site.yml --extra-vars "@config.yml"
+ansible-playbook ansible/site.yml --extra-vars "@config.yml" --ask-vault-pass
 ```
 Instead of copying the config and defining the variables there you can also
 [use environment variables to define them one by one](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#defining-variables-at-runtime).
+
+### SSH access to the server
+
+Ansible connects to the server as `root` using the keys in `server_ssh_keys`. The Hetzner firewall only allows the
+mail ports by default, so choose how Ansible reaches SSH:
+
+- **Public SSH:** set `server_firewall_ssh_enabled: true` to open port 22 to the whole internet.
+- **VPN (e.g. WireGuard):** keep SSH closed and set `server_ip_override` to the server's address inside your VPN.
+  Ansible then connects to that address instead of the public IPv4. Setting up the VPN itself is not part of this
+  playbook; if it needs an open port on the server, attach a firewall allowing it via `server_extra_firewalls`.
+  For the very first run on a new server, the VPN doesn't exist yet, so temporarily enable public SSH.
+
+### Encrypting secrets
+
+Secrets in `config.yml` are encrypted with [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html).
+Ansible decrypts them in memory while running the playbook, so they are never stored in plain text on your machine.
+All values are encrypted with the same vault password; store it in your password manager, as the values can't be
+recovered without it.
+
+1. Encrypt each secret and replace the example value in `config.yml` with the printed `!vault` block:
+   ```
+   ansible-vault encrypt_string --ask-vault-pass --stdin-name hcloud_token
+   ansible-vault encrypt_string --ask-vault-pass --stdin-name backup_passphrase
+   ansible-vault encrypt_string --ask-vault-pass --stdin-name backup_private_key
+   ```
+   Enter the vault password, then the value, press Enter and then Ctrl+D.
+2. To check a value later, run `ansible localhost -m debug -a var=<name> --extra-vars "@config.yml" --ask-vault-pass`.
+
+The secrets still end up in plain text on the mail server (readable by root only), as the backups need them to run
+unattended.
 
 ## Updating mailcow
 
 A normal playbook run only applies the configuration and does not update mailcow. To update mailcow, run:
 ```
-ansible-playbook ansible/site.yml --extra-vars "@config.yml" --extra-vars "mailcow_install_updates=true"
+ansible-playbook ansible/site.yml --extra-vars "@config.yml" --extra-vars "mailcow_install_updates=true" --ask-vault-pass
 ```
 Updates follow the branch set in `mailcow_branch` (`master` by default). The branch is only used for the initial install;
 switching an existing installation to another branch has to be done with mailcow's `update.sh` on the server.
 If backups are enabled, a backup is created right before updating.
 Set `mailcow_install_updates: true` in `config.yml` to update on every run instead.
 
-## Setting up backups using BorgBase
+## Backups
+
+Backups are optional and made with [borgmatic](https://torsion.org/borgmatic/) running as an additional container
+next to mailcow. They are encrypted and sent over SSH to any provider supporting Borg.
+
+### Setting up
+
+#### BorgBase
 
 1. Create an account at [BorgBase](https://www.borgbase.com/) and add a new repository.
 2. Create a new ssh keypair without a passphrase on your local machine:
@@ -82,7 +121,7 @@ Set `mailcow_install_updates: true` in `config.yml` to update on every run inste
 As the key has append-only access, pruning old backups doesn't free any space. Compact the repository from time to time
 using **More > Compact repo** in the BorgBase control panel.
 
-## Setting up backups using a Hetzner Storage Box
+#### Hetzner Storage Box
 
 1. [Buy](https://www.hetzner.com/storage/storage-box) a storage box of your choice
 2. Reset the password for the root account to obtain the password.
@@ -137,18 +176,18 @@ using **More > Compact repo** in the BorgBase control panel.
     1. `backup_healthchecks_enabled: true`
     2. `backup_healthchecks_webhook: https://hc-ping.com/<ping_uuid>`
 
-# How to restore from a backup
+### Restoring
 
 Restoring is not part of the playbook, as it should be done only under supervision and with extreme caution.
 The backup contains the data directories of the following services: `vmail`, `crypt`, `redis`, `rspamd`, `postfix`.
 Additionally, the MySQL database is backed up using the MySQL Borgmatic integration. As the backup mechanism is different 
 from that of the other services, it is also necessary to distinguish between them during recovery.
 
-## Prerequisites
+#### Prerequisites
 
 You need an shh connection to the cloud server and run all following commands in the `/opt/mailcow-dockerized`.
 
-## List all available backups
+#### List all available backups
 
 ```
 docker compose exec borgmatic-mailcow borgmatic list
@@ -167,7 +206,7 @@ Every backup has an unique name which is shown in the first column. The name is 
 specify which backup you want to restore. It's also possible to use `latest` instead to reference the latest
 available backup.
 
-## Restore services but the MySQL database
+#### Restore services but the MySQL database
 
 If you want to restore a service beside the MySQL database you need to set the `backup_restorable` config variable
 correctly (add all services you want to restore to the list) and run the playbook for the changes to take effect.
@@ -199,14 +238,14 @@ Restoring is also possible for particular files of a backup (e.g. restoring only
 Check out the [borgmatic docs](https://torsion.org/borgmatic/docs/how-to/extract-a-backup/#extract-particular-files) for instructions.
 The mentioned limitation also applies for restoring particular files which means that you may want to delete the existing files/folders beforehand.
 
-## Restore MySQL database
+#### Restore MySQL database
 
 If you want to restore the MySQL database run the following command:
 ```
 docker compose exec borgmatic-mailcow borgmatic restore --archive <name>
 ```
 
-## After restoring
+#### After restoring
 
 Restart mailcow:
 ```

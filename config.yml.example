@@ -1,8 +1,16 @@
 #----------------------------------------#
 #   Hetzner cloud server configuration   #
 #----------------------------------------#
-# Hetzner Cloud token with write access (https://console.hetzner.cloud/projects/xxxxxxx/security/tokens)
-hcloud_token: xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxxxzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz
+# Hetzner Cloud token with write access (https://console.hetzner.cloud/projects/xxxxxxx/security/tokens).
+# Secrets are encrypted with Ansible Vault: replace the example with the output of
+# `ansible-vault encrypt_string --stdin-name hcloud_token` (see README)
+hcloud_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  32656530363736633433306239383730316432383065363731396563393662653036646639646537
+  3238346366636462373538656136663263383934643134630a346536633635633162613762356236
+  62393866376639333937363363623136323563653831326366346537386631633535306636303162
+  3130633664316337320a323364333765373832393437633336663339373634623362383364623234
+  64666131376663303635653261613666646239333736393931613732313839333930
 # Hetzner server name
 server_name: mailserver
 # Server type from https://docs.hetzner.com/cloud/servers/overview/#server-types
@@ -17,8 +25,12 @@ server_backups: false
 # SSH keys for management access using the root user
 server_ssh_keys:
   - { name: "WeirdName", key: "ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }
-# Override the retrieved public Hetzner IPv4 with internal wireguard adresses etc.
+# Open SSH (port 22) to the whole internet in the Hetzner firewall. Not needed when connecting through a VPN
+server_firewall_ssh_enabled: false
+# Address Ansible connects to instead of the server's public IPv4, e.g. its WireGuard or other VPN address
 server_ip_override:
+# Names of additional, existing Hetzner firewalls to attach, e.g. one allowing your VPN's port
+server_extra_firewalls: []
 
 #----------------------------------------#
 #          mailcow configuration         #
@@ -41,10 +53,24 @@ mailcow_watchdog_contact: monitoring@external.com
 #----------------------------------------#
 # Whether backup using Borgbackup to an external server should be enabled
 backup_enabled: true
-# Passphrase for the Borgbackup repository
-backup_passphrase: "supersecret"
-# SSH private key as base64 for connecting to the backup host
-backup_private_key: "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KLS0tLS1FTkQgT1BFTlNTSCBQUklW|||xyz|||QVRFIEtFWS0tLS0tCg=="
+# Passphrase for the Borgbackup repository (encrypted, see README)
+backup_passphrase: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  61393161336331353461353962616439383962333863613330663438383462313339633139363062
+  3939383934303739633538396264316263353666656466640a376236323131373035613532633634
+  61373664646366363630383836393765396230303933356462643931353065303836663532393230
+  6232653335393261300a663336333766613164326230326133333933656366633131306362666138
+  33386562313861343233626139646365383931646263646134633039303734353663356263666539
+  3065653862313562306636323161613030633031393537613737
+# SSH private key as base64 for connecting to the backup host (encrypted, see README)
+backup_private_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  37663439636638343036343437633231346133663634383234373533393235373261346162313262
+  3534383136656339666236616466616139326139653536300a386238353231343136343164626435
+  36663538306136613939393766316461366538343831613639356266383135643035313265313435
+  3139333862343961630a323939646466383363346464346435653066306566663639306532636232
+  33333338393039393037613339653638313431316164346633343637383839346465616632363630
+  3338653430646463343265623931303735303537306366383666
 # Backup server user (BorgBase: <repo_id>)
 backup_user: u111111-sub1
 # Backup server host (BorgBase: <repo_id>.repo.borgbase.com)
