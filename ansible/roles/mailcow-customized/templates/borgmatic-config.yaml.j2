@@ -26,9 +26,15 @@ mariadb_databases:
 
 ssh_command: ssh -o StrictHostKeyChecking={{ 'yes' if backup_host_keys else 'accept-new' }}
 
-# Don't read whole repo each time
-skip_actions:
-    - check
+# Checks run with the hourly backup, but each only when its frequency has elapsed.
+# "data" verifies chunk signatures and therefore detects tampering, but reads a lot of data.
+checks:
+    - name: repository
+      frequency: 1 week
+    - name: archives
+      frequency: 1 week
+    - name: data
+      frequency: 1 month
 
 check_last: 3
 

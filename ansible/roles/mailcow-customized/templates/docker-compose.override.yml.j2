@@ -13,6 +13,7 @@ services:
       - mysql-socket-vol-1:/var/run/mysqld/:z
       - borg-config-vol-1:/root/.config/borg:Z
       - borg-cache-vol-1:/root/.cache/borg:Z
+      - borgmatic-state-vol-1:/root/.local/state/borgmatic:Z
       - ./data/conf/borgmatic/etc:/etc/borgmatic.d:Z
       - ./data/conf/borgmatic/ssh:/root/.ssh:Z
     environment:
@@ -29,3 +30,4 @@ services:
 volumes:
   borg-cache-vol-1:
   borg-config-vol-1:
+  borgmatic-state-vol-1:
