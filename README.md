@@ -1,8 +1,8 @@
 # mailserver-ansible
 
 Ansible playbook to automatically set up a [mailcow](https://github.com/mailcow/mailcow-dockerized/) on [Hetzner Cloud](https://www.hetzner.com/cloud),
-including provisioning of the server itself, with optional backups to a
-[Hetzner Storage Box](https://www.hetzner.com/storage/storage-box) (or other providers with available ssh access).
+including provisioning of the server itself, with optional backups to [BorgBase](https://www.borgbase.com/),
+a [Hetzner Storage Box](https://www.hetzner.com/storage/storage-box) or any other provider with Borg over SSH.
 
 ## Prerequisites
 
@@ -52,6 +52,35 @@ Updates follow the branch set in `mailcow_branch` (`master` by default). The bra
 switching an existing installation to another branch has to be done with mailcow's `update.sh` on the server.
 If backups are enabled, a backup is created right before updating.
 Set `mailcow_install_updates: true` in `config.yml` to update on every run instead.
+
+## Setting up backups using BorgBase
+
+1. Create an account at [BorgBase](https://www.borgbase.com/) and add a new repository.
+2. Create a new ssh keypair without a passphrase on your local machine:
+   ```
+   ssh-keygen -t ed25519 -N "" -f <pathofyourchoice>/backup_key
+   ```
+3. Add the public key (`<pathofyourchoice>/backup_key.pub`) under **Account > SSH Keys** and assign it to the repository
+   with **Append-only access**. The mailcow server can then add new backups, but never remove existing ones
+   ([details](https://docs.borgbase.com/repositories/append-only.html)).
+4. Transform the private key to base64 using `base64 -w 0 <pathofyourchoice>/backup_key`
+5. Enable and configure backups using vars in this ansible script. The repository ID is shown in the repository URL
+   `ssh://<repo_id>@<repo_id>.repo.borgbase.com/./repo`:
+    1. `backup_enabled: true`
+    2. `backup_passphrase: <choosesecretpassphrase>`
+    3. `backup_private_key: <private_key_base64>`
+    4. `backup_user: <repo_id>`
+    5. `backup_host: <repo_id>.repo.borgbase.com`
+    6. `backup_port: 22`
+    7. `backup_path: ./repo`
+    8. `backup_host_keys: [<host_key>, ...]`: full public keys as described in step 12.8 of the Storage Box setup below,
+       using `ssh-keyscan <repo_id>.repo.borgbase.com`. BorgBase shows the expected fingerprint when hovering the
+       fingerprint icon next to the repository.
+6. Optionally set a [monitoring alert](https://docs.borgbase.com/repositories/settings.html) for the repository, so
+   BorgBase notifies you when no new backup arrived for a number of days.
+
+As the key has append-only access, pruning old backups doesn't free any space. Compact the repository from time to time
+using **More > Compact repo** in the BorgBase control panel.
 
 ## Setting up backups using a Hetzner Storage Box
 

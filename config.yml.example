@@ -45,17 +45,17 @@ backup_enabled: true
 backup_passphrase: "supersecret"
 # SSH private key as base64 for connecting to the backup host
 backup_private_key: "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KLS0tLS1FTkQgT1BFTlNTSCBQUklW|||xyz|||QVRFIEtFWS0tLS0tCg=="
-# Backup server user
+# Backup server user (BorgBase: <repo_id>)
 backup_user: u111111-sub1
-# Backup server host
+# Backup server host (BorgBase: <repo_id>.repo.borgbase.com)
 backup_host: u111111-sub1.your-storagebox.de
-# Backup server ssh port
+# Backup server ssh port (BorgBase: 22)
 backup_port: 23
 # SSH host keys of the backup server ("<type> <key>", e.g. from `ssh-keyscan -p 23 <host> | cut -d' ' -f2-`).
 # If empty, the key is trusted on first connection and verified afterwards.
 backup_host_keys:
   - ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-# Path of the Borgbackup repository at the backup server
+# Path of the Borgbackup repository at the backup server (BorgBase: ./repo)
 backup_path: ./backups
 # Whether the healtchecks.io (self-hosting supported) monitoring for the backup job should be enabled
 backup_healthchecks_enabled: true
