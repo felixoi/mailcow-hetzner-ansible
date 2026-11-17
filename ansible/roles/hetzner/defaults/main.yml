@@ -3,5 +3,15 @@ server_location: nbg1
 server_backups: false
 server_ssh_keys:
 server_firewall_mailcow_name: mailcow
+# Ports opened to the public by the mailcow firewall
+server_firewall_mailcow_ports:
+  - { port: "25", description: Postfix SMTP }
+  - { port: "465", description: Postfix SMTPS }
+  - { port: "587", description: Postfix Submission }
+  - { port: "143", description: Dovecot IMAP }
+  - { port: "993", description: Dovecot IMAPS }
+  - { port: "4190", description: Dovecot ManageSieve }
+  - { port: "80", description: HTTP }
+  - { port: "443", description: HTTPS }
 server_firewall_ssh_enabled: false
 server_firewall_ssh_name: ssh
