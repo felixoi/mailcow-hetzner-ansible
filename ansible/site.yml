@@ -17,6 +17,27 @@
     mailcow__config_use_watchdog: true
     mailcow__config_watchdog_notify_email: "{{ mailcow_watchdog_contact }}"
     mailcow__config_skip_fts: "{{ not mailcow_fts }}"
+    # Only update mailcow when explicitly asked for, e.g. with -e mailcow_install_updates=true
+    mailcow__install_updates: "{{ mailcow_install_updates | default(false) | bool }}"
+  pre_tasks:
+    - name: Back up mailcow before updating
+      when:
+        - mailcow__install_updates
+        - backup_enabled | default(false) | bool
+      block:
+        - name: Check if Borgmatic container is running
+          ansible.builtin.command: "{{ mailcow__compose_command }} ps --status running --quiet borgmatic-mailcow"
+          args:
+            chdir: "{{ mailcow__install_path }}"
+          register: borgmatic_running
+          changed_when: false
+          failed_when: false
+
+        - name: Create Borgmatic backup
+          ansible.builtin.command: "{{ mailcow__compose_command }} exec -T borgmatic-mailcow borgmatic create --stats --verbosity 1"
+          args:
+            chdir: "{{ mailcow__install_path }}"
+          when: borgmatic_running.stdout | length > 0
   roles:
     - server
     - mailcow

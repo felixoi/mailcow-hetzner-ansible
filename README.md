@@ -40,6 +40,15 @@ ansible-playbook ansible/site.yml --extra-vars "@config.yml"
 Instead of copying the config and defining the variables there you can also
 [use environment variables to define them one by one](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#defining-variables-at-runtime).
 
+## Updating mailcow
+
+A normal playbook run only applies the configuration and does not update mailcow. To update mailcow, run:
+```
+ansible-playbook ansible/site.yml --extra-vars "@config.yml" --extra-vars "mailcow_install_updates=true"
+```
+Updates always follow mailcow's stable `master` branch. If backups are enabled, a backup is created right before updating.
+Set `mailcow_install_updates: true` in `config.yml` to update on every run instead.
+
 ## Setting up backups using a Hetzner Storage Box
 
 1. [Buy](https://www.hetzner.com/storage/storage-box) a storage box of your choice
