@@ -11,7 +11,8 @@
   vars:
     mailcow__install_path: "/opt/mailcow-dockerized"
     mailcow__hostname: "{{ hostname }}"
-    mailcow__git_version: "{{ mailcow_version }}"
+    # mailcow_version is the old name of mailcow_branch
+    mailcow__git_version: "{{ mailcow_branch | default(mailcow_version) | default('master') }}"
     mailcow__timezone: "{{ timezone }}"
     mailcow__config_http_redirect: true
     mailcow__config_use_watchdog: true

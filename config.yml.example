@@ -23,8 +23,9 @@ server_ip_override:
 hostname: mail.example.com
 # Server and mailserver timezone
 timezone: Europe/Berlin
-# mailcow branch used for the initial install. Updates always follow mailcow's stable "master" branch.
-mailcow_version: master
+# mailcow branch to install and update: master (stable), nightly or legacy.
+# Use a branch, not a release tag: mailcow's updater only works on a branch.
+mailcow_branch: master
 # Update mailcow on every playbook run. Otherwise update only when asked for (see README)
 mailcow_install_updates: false
 # Mailcow full text search

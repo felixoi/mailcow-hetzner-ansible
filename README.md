@@ -46,7 +46,9 @@ A normal playbook run only applies the configuration and does not update mailcow
 ```
 ansible-playbook ansible/site.yml --extra-vars "@config.yml" --extra-vars "mailcow_install_updates=true"
 ```
-Updates always follow mailcow's stable `master` branch. If backups are enabled, a backup is created right before updating.
+Updates follow the branch set in `mailcow_branch` (`master` by default). The branch is only used for the initial install;
+switching an existing installation to another branch has to be done with mailcow's `update.sh` on the server.
+If backups are enabled, a backup is created right before updating.
 Set `mailcow_install_updates: true` in `config.yml` to update on every run instead.
 
 ## Setting up backups using a Hetzner Storage Box
