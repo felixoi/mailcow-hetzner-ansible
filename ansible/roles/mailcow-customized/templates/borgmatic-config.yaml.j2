@@ -24,7 +24,8 @@ mariadb_databases:
     list_options: "--skip-ssl"
     restore_options: "--skip-ssl"
 
-ssh_command: ssh -o StrictHostKeyChecking={{ 'yes' if backup_host_keys else 'accept-new' }}
+# UpdateHostKeys=no keeps ssh from adding further host keys to the known_hosts file managed by Ansible
+ssh_command: ssh -o StrictHostKeyChecking={{ 'yes' if backup_host_keys else 'accept-new' }} -o UpdateHostKeys=no
 
 # Checks run with the hourly backup, but each only when its frequency has elapsed.
 # "data" verifies chunk signatures and therefore detects tampering, but reads a lot of data.

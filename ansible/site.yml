@@ -21,7 +21,7 @@
     # Only update mailcow when explicitly asked for, e.g. with -e mailcow_install_updates=true
     mailcow__install_updates: "{{ mailcow_install_updates | default(false) | bool }}"
   pre_tasks:
-    - name: Back up mailcow before updating
+    - name: Back up mailcow before potentially updating
       when:
         - mailcow__install_updates
         - backup_enabled | default(false) | bool
@@ -35,9 +35,10 @@
           failed_when: false
 
         - name: Create Borgmatic backup
-          ansible.builtin.command: "{{ mailcow__compose_command }} exec -T borgmatic-mailcow borgmatic create --stats --verbosity 1"
+          ansible.builtin.command: "{{ mailcow__compose_command }} exec -T borgmatic-mailcow borgmatic-start create --stats --verbosity 1"
           args:
             chdir: "{{ mailcow__install_path }}"
+          changed_when: false
           when: borgmatic_running.stdout | length > 0
   roles:
     - server

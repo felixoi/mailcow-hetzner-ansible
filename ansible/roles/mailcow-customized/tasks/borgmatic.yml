@@ -9,6 +9,7 @@
   ansible.builtin.file:
     path: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/"
     state: directory
+    mode: '0700'
 
 # ${DBNAME}, ${DBUSER} and ${DBPASS} are left as-is and interpolated by borgmatic
 # from the container environment set in docker-compose.override.yml
@@ -64,7 +65,7 @@
     - not docker_output.changed
 
 - name: Initialize Borgmatic repository
-  ansible.builtin.command: "{{ mailcow__compose_command }} exec borgmatic-mailcow borgmatic repo-create --encryption repokey-blake2"
+  ansible.builtin.command: "{{ mailcow__compose_command }} exec -T borgmatic-mailcow borgmatic repo-create --encryption repokey-blake2"
   args:
     chdir: "{{ mailcow__install_path }}"
     creates: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
