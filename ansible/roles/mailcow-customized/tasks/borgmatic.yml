@@ -22,6 +22,7 @@
   ansible.builtin.copy:
     src: borgmatic-crontab.txt
     dest: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/crontab.txt"
+  register: borgmatic_crontab
 
 - name: Create Borgmatic config/ssh directory
   ansible.builtin.file:
@@ -52,6 +53,15 @@
     chdir: "{{ mailcow__install_path }}"
   register: docker_output
   changed_when: "('Started' in docker_output.stderr) or ('Recreated' in docker_output.stderr)"
+
+# The container only reads crontab.txt on startup
+- name: Restart Borgmatic container to apply crontab
+  ansible.builtin.command: "{{ mailcow__compose_command }} restart borgmatic-mailcow"
+  args:
+    chdir: "{{ mailcow__install_path }}"
+  when:
+    - borgmatic_crontab.changed
+    - not docker_output.changed
 
 - name: Initialize Borgmatic repository
   ansible.builtin.command: "{{ mailcow__compose_command }} exec borgmatic-mailcow borgmatic repo-create --encryption repokey-blake2"

@@ -1,1 +1,1 @@
-14 * * * * PATH=$PATH:/usr/local/bin /usr/local/bin/borgmatic --stats -v 0 2>&1
+14 * * * * PATH=$PATH:/usr/local/bin /usr/local/bin/borgmatic-start --stats -v 0 2>&1
