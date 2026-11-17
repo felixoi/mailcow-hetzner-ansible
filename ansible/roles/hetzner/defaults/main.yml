@@ -1,3 +1,4 @@
+---
 server_name: mailserver
 server_location: nbg1
 server_os_image: ubuntu-26.04

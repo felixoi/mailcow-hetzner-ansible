@@ -1,6 +1,12 @@
-- ansible.builtin.import_tasks: network.yml
-- ansible.builtin.import_tasks: setup.yml
-- ansible.builtin.import_tasks: dns.yml
+---
+- name: Configure network
+  ansible.builtin.import_tasks: network.yml
+
+- name: Configure hostname and timezone
+  ansible.builtin.import_tasks: setup.yml
+
+- name: Configure DNS
+  ansible.builtin.import_tasks: dns.yml
 
 # Apply network and DNS changes before Docker and mailcow rely on them
 - name: Apply pending network and DNS changes

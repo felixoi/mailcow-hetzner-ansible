@@ -1,3 +1,4 @@
+---
 - name: Setup hetzner resources
   hosts: localhost
   connection: local
@@ -43,4 +44,4 @@
     - server
     - geerlingguy.docker
     - mailcow
-    - mailcow-customized
+    - mailcow_customized

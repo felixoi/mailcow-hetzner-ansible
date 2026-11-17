@@ -1,4 +1,12 @@
-- ansible.builtin.import_tasks: firewall.yml
-- ansible.builtin.import_tasks: ssh.yml
-- ansible.builtin.import_tasks: server.yml
-- ansible.builtin.import_tasks: rdns.yml
+---
+- name: Create firewalls
+  ansible.builtin.import_tasks: firewall.yml
+
+- name: Add SSH keys
+  ansible.builtin.import_tasks: ssh.yml
+
+- name: Create server
+  ansible.builtin.import_tasks: server.yml
+
+- name: Set reverse DNS
+  ansible.builtin.import_tasks: rdns.yml

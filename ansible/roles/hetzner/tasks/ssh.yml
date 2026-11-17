@@ -1,5 +1,6 @@
+---
 - name: Add server SSH keys
-  hetzner.hcloud.hcloud_ssh_key:
+  hetzner.hcloud.ssh_key:
     api_token: "{{ hcloud_token }}"
     name: "{{ item.name }}"
     public_key: "{{ item.key }}"

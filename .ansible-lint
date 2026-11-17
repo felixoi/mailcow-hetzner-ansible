@@ -1,0 +1,11 @@
+---
+profile: production
+
+# Upstream mailcow role (git submodule), linted by its own project
+exclude_paths:
+  - ansible/roles/mailcow/
+
+skip_list:
+  # Role variables like server_name or backup_enabled are the user-facing config options
+  # and are shared between roles, so they intentionally don't carry the role name as prefix
+  - var-naming[no-role-prefix]

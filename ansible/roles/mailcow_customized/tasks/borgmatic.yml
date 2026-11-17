@@ -1,3 +1,4 @@
+---
 - name: Copy docker-compose.override.yml containing Borgmatic
   ansible.builtin.template:
     src: docker-compose.override.yml.j2
@@ -23,6 +24,7 @@
   ansible.builtin.copy:
     src: borgmatic-crontab.txt
     dest: "{{ mailcow__install_path }}/data/conf/borgmatic/etc/crontab.txt"
+    mode: '0644'
   register: borgmatic_crontab
 
 - name: Create Borgmatic config/ssh directory
@@ -63,6 +65,7 @@
   when:
     - borgmatic_crontab.changed
     - not docker_output.changed
+  changed_when: true
 
 - name: Initialize Borgmatic repository
   ansible.builtin.command: "{{ mailcow__compose_command }} exec -T borgmatic-mailcow borgmatic repo-create --encryption repokey-blake2"
@@ -75,4 +78,6 @@
   ansible.builtin.file:
     path: "{{ mailcow__install_path }}/data/conf/borgmatic/initialized"
     state: touch
-  when: borgmatic_init.changed
+    mode: '0644'
+  # Must happen right after initialization, not at the end of the play as a handler would
+  when: borgmatic_init.changed  # noqa: no-handler
