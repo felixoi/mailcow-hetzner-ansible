@@ -1,0 +1,38 @@
+---
+# Creates a floating IP if none with this name exists yet, otherwise uses the existing one.
+# force moves it away from a previous server, e.g. when migrating to a new one.
+- name: Create floating IPs and assign them to the server
+  hetzner.hcloud.floating_ip:
+    api_token: "{{ hcloud_token }}"
+    name: "{{ item.name }}"
+    type: "{{ item.type }}"
+    server: "{{ server_name }}"
+    force: true
+    delete_protection: true
+    state: present
+  loop: "{{ server_floating_ips }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: floating_ip_result
+
+- name: Check that the floating IPs have the expected type
+  ansible.builtin.assert:
+    that: item.hcloud_floating_ip.type == item.item.type
+    fail_msg: "Floating IP '{{ item.item.name }}' exists, but is not an {{ item.item.type }} floating IP"
+    quiet: true
+  loop: "{{ floating_ip_result.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  # In check mode, new floating IPs aren't created and have no details
+  when: item.hcloud_floating_ip.type is defined
+
+- name: Register floating IP addresses
+  ansible.builtin.set_fact:
+    # Empty if not configured. The IPv6 floating IP is a /64 network, its first address is used.
+    server_floating_ipv4_address: >-
+      {{ floating_ip_result.results | map(attribute='hcloud_floating_ip') | selectattr('type', 'defined')
+         | selectattr('type', 'eq', 'ipv4') | map(attribute='ip') | first | default('') }}
+    server_floating_ipv6_address: >-
+      {%- set ip = floating_ip_result.results | map(attribute='hcloud_floating_ip') | selectattr('type', 'defined')
+                   | selectattr('type', 'eq', 'ipv6') | map(attribute='ip') | first | default('') -%}
+      {{ ((ip if '/' in ip else ip ~ '/64') | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address')) if ip else '' }}

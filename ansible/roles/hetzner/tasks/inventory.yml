@@ -1,0 +1,11 @@
+---
+# The addresses are passed as host variables, so the server roles in the next play can use them directly
+- name: Add created cloud server to host group
+  ansible.builtin.add_host:
+    hostname: "{{ server_ssh_address | default(server_ipv4_address, true) }}"
+    groupname: servers
+    server_ipv4_address: "{{ server_ipv4_address }}"
+    server_ipv6_address: "{{ server_ipv6_address }}"
+    server_floating_ipv4_address: "{{ server_floating_ipv4_address }}"
+    server_floating_ipv6_address: "{{ server_floating_ipv6_address }}"
+  changed_when: false

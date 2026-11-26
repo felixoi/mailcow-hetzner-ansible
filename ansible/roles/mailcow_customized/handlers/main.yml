@@ -1,0 +1,7 @@
+---
+# Recreates only the containers whose configuration changed (netfilter and dovecot use the SNAT settings)
+- name: Apply mailcow outgoing IPs
+  ansible.builtin.command: "{{ mailcow__compose_command }} --project-name {{ mailcow__docker_compose_project_name }} up -d"
+  args:
+    chdir: "{{ mailcow__install_path }}"
+  changed_when: true

@@ -1,0 +1,16 @@
+---
+# mailcow's netfilter container uses these addresses as source for outgoing connections (SNAT),
+# so mail is sent from the floating IPs. An empty value comments the setting out again.
+- name: Configure outgoing IPs in mailcow.conf
+  ansible.builtin.lineinfile:
+    path: "{{ mailcow__install_path }}/mailcow.conf"
+    regexp: "^#?{{ item.variable }}="
+    line: "{{ (item.variable ~ '=' ~ item.value) if item.value else ('#' ~ item.variable ~ '=') }}"
+  loop:
+    - variable: SNAT_TO_SOURCE
+      value: "{{ server_floating_ipv4_address }}"
+    - variable: SNAT6_TO_SOURCE
+      value: "{{ server_floating_ipv6_address }}"
+  loop_control:
+    label: "{{ item.variable }}"
+  notify: Apply mailcow outgoing IPs

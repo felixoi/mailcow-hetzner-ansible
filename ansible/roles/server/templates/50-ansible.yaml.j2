@@ -4,8 +4,14 @@ network:
   ethernets:
     eth0:
       addresses:
-      - {{ hostvars['localhost'].server_info.ipv4_address }}/32
-      - {{ hostvars['localhost'].server_ipv6_address }}/64
+      - {{ server_ipv4_address }}/32
+      - {{ server_ipv6_address }}/64
+{% if server_floating_ipv4_address %}
+      - {{ server_floating_ipv4_address }}/32
+{% endif %}
+{% if server_floating_ipv6_address %}
+      - {{ server_floating_ipv6_address }}/64
+{% endif %}
       routes:
       - to: 0.0.0.0/0
         via: 172.31.1.1
@@ -14,5 +20,5 @@ network:
         via: fe80::1
         on-link: true
       match:
-        macaddress: {{ hostvars[inventory_hostname]["ansible_facts"]["default_ipv4"]["macaddress"] }}
+        macaddress: {{ ansible_facts.default_ipv4.macaddress }}
       set-name: eth0

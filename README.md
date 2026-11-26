@@ -50,10 +50,36 @@ Ansible connects to the server as `root` using the keys in `server_ssh_keys`. Th
 mail ports by default, so choose how Ansible reaches SSH:
 
 - **Public SSH:** set `server_firewall_ssh_enabled: true` to open port 22 to the whole internet.
-- **VPN (e.g. WireGuard):** keep SSH closed and set `server_ip_override` to the server's address inside your VPN.
+- **VPN (e.g. WireGuard):** keep SSH closed and set `server_ssh_address` to the server's address inside your VPN.
   Ansible then connects to that address instead of the public IPv4. Setting up the VPN itself is not part of this
   playbook; if it needs an open port on the server, attach a firewall allowing it via `server_extra_firewalls`.
   For the very first run on a new server, the VPN doesn't exist yet, so temporarily enable public SSH.
+
+### Floating IPs
+
+A mail server's IP addresses build up a sending reputation. With [floating IPs](https://docs.hetzner.com/cloud/floating-ips/overview/)
+the addresses can be kept when the server is replaced. Set names for a floating IPv4 and/or IPv6:
+```
+server_floating_ipv4: mail-ipv4
+server_floating_ipv6: mail-ipv6
+```
+The playbook then
+- creates floating IPs with these names in the server's location if they don't exist yet (floating IPs are billed
+  separately), or uses existing ones with these names,
+- enables their delete protection, so they can't be deleted by accident,
+- assigns them to the server, moving them away from any other server they are assigned to,
+- adds them to the server's network configuration,
+- sets their reverse DNS entry to `hostname`,
+- makes mailcow use them as source address for all outgoing connections (`SNAT_TO_SOURCE` / `SNAT6_TO_SOURCE`).
+
+Point the DNS records of `hostname` (A/AAAA, and therefore MX and SPF) to the floating IPs. For the IPv6 floating IP,
+which is a /64 network, the first address (`::1`) is used. Other traffic of the server, e.g. package updates, still
+uses the server's own IPs.
+
+To move to a new server, first set it up without the floating IPs: change `server_name`, leave the two options empty
+and run the playbook, then restore the backup on the new server. Afterwards set the floating IP options again and run
+the playbook once more to move the IPs over, so incoming mail only reaches the new server once it has all mailboxes.
+Then remove the old server.
 
 ### Encrypting secrets
 

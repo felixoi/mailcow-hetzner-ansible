@@ -1,4 +1,7 @@
 ---
+- name: Send mailcow traffic from the floating IPs
+  ansible.builtin.import_tasks: snat.yml
+
 - name: Set up Borgmatic backups
   ansible.builtin.import_tasks: borgmatic.yml
   when: backup_enabled

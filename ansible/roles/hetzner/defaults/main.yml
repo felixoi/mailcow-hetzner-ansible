@@ -3,6 +3,9 @@ server_name: mailserver
 server_location: nbg1
 server_os_image: ubuntu-26.04
 server_backups: false
+# Names of Hetzner floating IPs to assign to the server and send mail from, created if they don't exist
+server_floating_ipv4: ""
+server_floating_ipv6: ""
 server_ssh_keys:
 server_firewall_mailcow_name: mailcow
 # Ports opened to the public by the mailcow firewall

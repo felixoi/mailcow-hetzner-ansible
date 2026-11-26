@@ -8,5 +8,11 @@
 - name: Create server
   ansible.builtin.import_tasks: server.yml
 
+- name: Create and assign floating IPs
+  ansible.builtin.import_tasks: floating_ip.yml
+
 - name: Set reverse DNS
   ansible.builtin.import_tasks: rdns.yml
+
+- name: Add server to inventory
+  ansible.builtin.import_tasks: inventory.yml

@@ -23,11 +23,10 @@
 
 - name: Register server information
   ansible.builtin.set_fact:
-    server_info: "{{ server.hcloud_server }}"
+    server_ipv4_address: "{{ server.hcloud_server.ipv4_address }}"
     server_ipv6_address: "{{ server.hcloud_server.ipv6 | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') }}"
-
-- name: Add created cloud server to host group
-  ansible.builtin.add_host:
-    hostname: "{{ server_ip_override | default(server.hcloud_server.ipv4_address, true) }}"
-    groupname: servers
-  changed_when: false
+    server_floating_ips: >-
+      {{
+      ([{'name': server_floating_ipv4, 'type': 'ipv4'}] if server_floating_ipv4 else [])
+      + ([{'name': server_floating_ipv6, 'type': 'ipv6'}] if server_floating_ipv6 else [])
+      }}

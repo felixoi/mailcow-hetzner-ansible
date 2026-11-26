@@ -7,5 +7,20 @@
     dns_ptr: "{{ hostname }}"
     state: present
   loop:
-    - "{{ server.hcloud_server.ipv4_address }}"
+    - "{{ server_ipv4_address }}"
     - "{{ server_ipv6_address }}"
+
+- name: Set reverse DNS entry for floating IPs
+  hetzner.hcloud.rdns:
+    api_token: "{{ hcloud_token }}"
+    floating_ip: "{{ item.name }}"
+    ip_address: "{{ item.address }}"
+    dns_ptr: "{{ hostname }}"
+    state: present
+  loop: >-
+    {{
+    ([{'name': server_floating_ipv4, 'address': server_floating_ipv4_address}] if server_floating_ipv4 else [])
+    + ([{'name': server_floating_ipv6, 'address': server_floating_ipv6_address}] if server_floating_ipv6 else [])
+    }}
+  loop_control:
+    label: "{{ item.name }}"
